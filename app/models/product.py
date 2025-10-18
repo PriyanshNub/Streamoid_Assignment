@@ -1,4 +1,4 @@
-## app/models/product.py
+
 
 
 
@@ -12,7 +12,7 @@ Base = declarative_base()
 class Product(Base):
     __tablename__ = "products"
 
-    sku = Column(String, primary_key=True, index=True)  # <- use sku as PK
+    sku = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)
     brand = Column(String)
     color = Column(String)
@@ -20,4 +20,5 @@ class Product(Base):
     mrp = Column(Float)
     price = Column(Float)
     quantity = Column(Integer)
+
 
