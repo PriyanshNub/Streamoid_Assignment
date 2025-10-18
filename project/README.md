@@ -1,5 +1,3 @@
-Absolutely! Here’s a professional and clean **`README.md`** template for your FastAPI Product API project:
-
 ````markdown
 # FastAPI Product API
 
@@ -99,5 +97,6 @@ docker-compose up --build
 Priyansh Sharaf
 
 ---
+
 
 
