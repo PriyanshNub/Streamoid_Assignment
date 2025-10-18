@@ -1,4 +1,3 @@
-## app/api/v1/product.py
 from sqlalchemy.orm import Session
 from app.db.session import get_db, engine
 from app.models.product import Base as ProductBase
@@ -17,7 +16,6 @@ import pandas as pd
 router = APIRouter()
 
 
-# Ensure tables exist (if not using alembic in this exercise)
 ProductBase.metadata.create_all(bind=engine)
 
 
@@ -28,11 +26,10 @@ async def upload_products(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    # 1️⃣ Validate file type
+
     if file.content_type not in ("text/csv", "application/vnd.ms-excel"):
         raise HTTPException(status_code=400, detail="CSV file required")
 
-    # 2️⃣ Read file contents
     contents = await file.read()
     df = pd.read_csv(io.StringIO(contents.decode("utf-8")))
 
@@ -46,7 +43,6 @@ async def upload_products(
 
     stored, failed = 0, []
 
-    # 3️⃣ Process each row
     for _, row in df.iterrows():
         try:
             product_data = {
@@ -60,7 +56,7 @@ async def upload_products(
                 "quantity": int(row["Quantity"])
             }
 
-            # Call your existing DB helper
+
             create_product(db, product_data)
             stored += 1
 
@@ -82,7 +78,7 @@ def list_products(
     skip = (page - 1) * limit
     products = get_products(db, skip=skip, limit=limit)
     total = count_products(db)
-    # Convert to dicts using Pydantic schema
+
     results = [ProductRead.from_orm(p).dict() for p in products]
     return {"total": total, "page": page, "limit": limit, "products": results}
 
@@ -98,4 +94,5 @@ def search(
     db: Session = Depends(get_db),
     ):
     results = search_products(db, brand=brand, color=color, min_price=minPrice, max_price=maxPrice)
+
     return [ProductRead.from_orm(p) for p in results]
