@@ -25,18 +25,18 @@ def parse_and_validate_csv(contents: bytes) -> Tuple[List[Dict], List[Dict]]:
 
 
     for i, row in enumerate(reader, start=1):
-    # Normalize keys to expected ones (strip whitespace)
+    
         row = {k.strip(): (v.strip() if v is not None else "") for k, v in row.items()}
 
 
-        # Check required fields
+        
         missing = [f for f in REQUIRED_FIELDS if f not in row or row[f] == ""]
         if missing:
             failed.append({"row_number": i, "row": row, "reason": f"missing fields: {missing}"})
         continue
 
 
-        # Convert numeric fields
+        
         try:
             mrp = float(row["mrp"])
             price = float(row["price"])
@@ -46,7 +46,7 @@ def parse_and_validate_csv(contents: bytes) -> Tuple[List[Dict], List[Dict]]:
             continue
 
 
-        # Business rules
+        
         if price > mrp:
             failed.append({"row_number": i, "row": row, "reason": "price greater than mrp"})
             continue
@@ -55,7 +55,7 @@ def parse_and_validate_csv(contents: bytes) -> Tuple[List[Dict], List[Dict]]:
             continue
 
 
-        # Build normalized dict
+        
         valid.append({
         "sku": row["sku"],
         "name": row["name"],
@@ -66,5 +66,6 @@ def parse_and_validate_csv(contents: bytes) -> Tuple[List[Dict], List[Dict]]:
         "price": price,
         "quantity": quantity,
         })
+
 
     return valid, failed
